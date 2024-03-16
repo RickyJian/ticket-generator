@@ -1,0 +1,21 @@
+{
+  "width": 6,
+  "length": 9,
+  "divider_position": 7.5,
+  "cinema": {
+    "name": "臺灣電影院",
+    "eng_name": "Taiwan Cinema"
+  },
+  "movie": {
+    "name": "電影名稱",
+    "eng_name": "Movie Name",
+    "time": "2024/01/01 00:00",
+    "room": "1樓1廳"
+  },
+  "ticket": {
+    "seat": "1徘1號",
+    "type": "全票",
+    "price": 240,
+    "sales_time": "2024/01/01 00:00"
+  }
+}
