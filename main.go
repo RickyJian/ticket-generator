@@ -2,13 +2,35 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"log"
 	"os"
 )
 
 const (
-	path = "data/data.json"
+	dataName = "data.json"
 )
+
+var (
+	src  string
+	dest string
+)
+
+func init() {
+	flag.StringVar(&src, "s", "", "input folder")
+	flag.StringVar(&dest, "d", "", "output folder")
+	flag.Usage = func() {
+		// TODO: add usage description
+		flag.PrintDefaults()
+	}
+	flag.Parse()
+
+	if src == "" {
+		log.Fatalf("src is required")
+	} else if dest == "" {
+		log.Fatalf("desc is required ")
+	}
+}
 
 func main() {
 	bs, err := os.ReadFile(path)
