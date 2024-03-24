@@ -33,7 +33,7 @@ func init() {
 }
 
 func main() {
-	bs, err := os.ReadFile(path)
+	dataBs, err := os.ReadFile(path.Join(src, dataName))
 	if err != nil {
 		log.Fatalf("failed to read data.json. err: %v\n", err)
 	}
@@ -45,26 +45,33 @@ func main() {
 
 type data struct {
 	Width           float32 `json:"width"`
-	Length          float32 `json:"length"`
+	Height          float32 `json:"height"`
 	DividerPosition float32 `json:"divider_position"`
-	Cinema          *cinema `json:"cinema"`
-	Movie           *movie  `json:"movie"`
-	Ticket          *ticket `json:"ticket"`
+	Background      string  `json:"background"`
+	FontFamily      string  `json:"font_family"`
+	// ticket information
+	Cinema *cinema `json:"cinema"`
+	Movie  *movie  `json:"movie"`
+	Ticket *ticket `json:"ticket"`
+}
+
+func (d *data) validate() error {
+	// TODO: validate data
+	return nil
 }
 
 type cinema struct {
-	Name    string `json:"name"`
-	EngName string `json:"eng_name"`
+	Name string `json:"name"`
 }
 
 type movie struct {
 	Name    string `json:"name"`
 	EngName string `json:"eng_name"`
 	Time    string `json:"time"`
-	Room    string `json:"room"`
 }
 
 type ticket struct {
+	Room      string `json:"room"`
 	Seat      string `json:"seat"`
 	Type      string `json:"type"`
 	Price     int    `json:"price"`
