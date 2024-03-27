@@ -7,8 +7,8 @@ import (
 	"math"
 	"path"
 
+	"github.com/RickyJian/gg"
 	"github.com/disintegration/imaging"
-	"github.com/fogleman/gg"
 )
 
 const (
