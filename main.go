@@ -20,8 +20,8 @@ var (
 )
 
 func init() {
-	flag.StringVar(&src, "s", "", "input folder(REQUIRE)")
-	flag.StringVar(&dest, "d", "", "output folder(REQUIRE)")
+	flag.StringVar(&src, "s", "", "input folder(REQUIRED)")
+	flag.StringVar(&dest, "d", "", "output folder(REQUIRED)")
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stdout, "ticket-generator is a command line tool to generate fake movie ticket.\n\n")
 		fmt.Fprintf(os.Stdout, "Usage:\n\n")
