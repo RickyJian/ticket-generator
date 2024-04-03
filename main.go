@@ -3,8 +3,10 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"fmt"
 	"log"
 	"os"
+	"path"
 )
 
 const (
@@ -17,18 +19,21 @@ var (
 )
 
 func init() {
-	flag.StringVar(&src, "s", "", "input folder")
-	flag.StringVar(&dest, "d", "", "output folder")
+	flag.StringVar(&src, "s", "", "input folder(REQUIRE)")
+	flag.StringVar(&dest, "d", "", "output folder(REQUIRE)")
 	flag.Usage = func() {
-		// TODO: add usage description
+		fmt.Fprintf(os.Stdout, "ticket-generator is a command line tool to generate fake movie ticket.\n\n")
+		fmt.Fprintf(os.Stdout, "Usage:\n\n")
+		fmt.Fprintf(os.Stdout, "\tticket-generator <flag> [arguments]\n\n")
+		fmt.Fprintf(os.Stdout, "The flags are:\n\n")
 		flag.PrintDefaults()
 	}
 	flag.Parse()
 
 	if src == "" {
-		log.Fatalf("src is required")
+		log.Fatalf("flag needs an argument: -s")
 	} else if dest == "" {
-		log.Fatalf("desc is required ")
+		log.Fatalf("flag needs an argument: -d ")
 	}
 }
 
