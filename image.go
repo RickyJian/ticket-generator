@@ -14,6 +14,7 @@ import (
 const (
 	white        = "#FFFFFF"
 	black        = "#000000"
+	red          = "#FF0000"
 	topPsvSpace  = 10
 	leftPsvSpace = 5
 )
@@ -46,8 +47,17 @@ func process(info *data) error {
 		canvas.SetDash(3, 5)
 		canvas.Stroke()
 	}
-
 	// drawing text
+	// 免責訊息
+	notifyFontSize := pixelFloat(info.Height-info.DividerPosition) / 10
+	if err := canvas.LoadFontFace(path.Join(src, info.FontFamily), notifyFontSize); err != nil {
+		return err
+	}
+	canvas.SetHexColor(red)
+	notifyText := "開映前二十分鐘，恕不退換。"
+	_, notifyW := canvas.MeasureString(notifyText)
+	canvas.DrawStringAnchored(notifyText, (widthFloat+notifyW)/2, position-topPsvSpace/2, 0.5, 0)
+	// 電影票訊息
 	fontSize := pixelFloat(info.Height-info.DividerPosition) / 8
 	if err := canvas.LoadFontFace(path.Join(src, info.FontFamily), fontSize); err != nil {
 		return err
@@ -63,32 +73,49 @@ func process(info *data) error {
 	movieText := fmt.Sprintf("片名：%s", info.Movie.Name)
 	_, movieH := canvas.MeasureString(movieText)
 	canvas.DrawStringAnchored(movieText, leftPsvSpace, position, 0, 1)
-	// TODO: 原始片名
-
+	moviePosition := position + movieH
+	movieTitleW, _ := canvas.MeasureString("片名：")
 	// 放映時間
-	position += topPsvSpace + movieH
+	position += topPsvSpace + movieH*2
 	movieTimeText := fmt.Sprintf("時間：%s", info.Movie.Time)
 	_, movieTimeH := canvas.MeasureString(movieTimeText)
 	canvas.DrawStringAnchored(movieTimeText, leftPsvSpace, position, 0, 1)
 	// 影廳
 	position += topPsvSpace + movieTimeH
 	roomText := fmt.Sprintf("影廳：%s", info.Ticket.Room)
-	_, roomTextH := canvas.MeasureString(roomText)
+	_, roomH := canvas.MeasureString(roomText)
 	canvas.DrawStringAnchored(roomText, leftPsvSpace, position, 0, 1)
 	// 座位
 	seatText := fmt.Sprintf("座位：%s", info.Ticket.Seat)
 	canvas.DrawStringAnchored(seatText, widthFloat/2, position, 0, 1)
 	// 票別
-	position += topPsvSpace + roomTextH
+	position += topPsvSpace + roomH
 	typeText := fmt.Sprintf("票別：%s", info.Ticket.Type)
+	_, typePositionH := canvas.MeasureString(typeText)
 	canvas.DrawStringAnchored(typeText, leftPsvSpace, position, 0, 1)
 	// 票價
 	priceText := fmt.Sprintf("票價：%d 元", info.Ticket.Price)
 	canvas.DrawStringAnchored(priceText, widthFloat/2, position, 0, 1)
+	// 原始片名
+	oriMovieFontSize := pixelFloat(info.Height-info.DividerPosition) / 10
+	if err := canvas.LoadFontFace(path.Join(src, info.FontFamily), oriMovieFontSize); err != nil {
+		return err
+	}
+	canvas.SetHexColor(black)
+	engPsvSpace := leftPsvSpace + 2 + movieTitleW
+	canvas.DrawStringAnchored(info.Movie.EngName, engPsvSpace, moviePosition+movieH, 0, 0.5)
+	// 售出時間
+	if err := canvas.LoadFontFace(path.Join(src, info.FontFamily), notifyFontSize); err != nil {
+		return err
+	}
+	canvas.SetHexColor(red)
+	salesText := fmt.Sprintf("售出：%s", info.Ticket.SalesTime)
+	_, salesTextW := canvas.MeasureString(salesText)
+	canvas.DrawStringAnchored(salesText, widthFloat-salesTextW, heightFloat-typePositionH, 1, 1)
+
 	if err := canvas.SavePNG(dest); err != nil {
 		return err
 	}
-	// TODO: 銷售時間
 	return nil
 }
 
