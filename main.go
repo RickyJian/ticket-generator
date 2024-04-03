@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -43,8 +44,13 @@ func main() {
 		log.Fatalf("failed to read data.json. err: %v\n", err)
 	}
 	info := &data{}
-	if err := json.Unmarshal(bs, &info); err != nil {
-		log.Fatalf("failed to unmarshal data. err: %v\n", err)
+	if err := json.Unmarshal(dataBs, &info); err != nil {
+		log.Fatalf("failed to unmarshal data. err: %v", err)
+	} else if err := info.validate(); err != nil {
+		log.Fatal(err)
+	}
+	if err := process(info); err != nil {
+		log.Fatalf("failed to process image. err: %v", err)
 	}
 }
 
@@ -61,7 +67,33 @@ type data struct {
 }
 
 func (d *data) validate() error {
-	// TODO: validate data
+	if d.Width <= 0 {
+		return errors.New("width must be greater than 0")
+	} else if d.Height <= 0 {
+		return errors.New("height must be greater than 0")
+	} else if d.DividerPosition < 0 {
+		return errors.New("division position cannot be negative")
+	} else if d.DividerPosition > d.Height {
+		return errors.New("division position cannot be greater than height")
+	} else if d.FontFamily == "" {
+		return errors.New("font family cannot be empty")
+	} else if d.Cinema.Name == "" {
+		return errors.New("cinema name cannot be empty")
+	} else if d.Movie.Name == "" {
+		return errors.New("movie name cannot be empty")
+	} else if d.Movie.Name == "" {
+		return errors.New("movie eng name cannot be empty")
+	} else if d.Movie.Time == "" {
+		return errors.New("movie time cannot be empty")
+	} else if d.Ticket.Room == "" {
+		return errors.New("ticket room cannot be empty")
+	} else if d.Ticket.Seat == "" {
+		return errors.New("ticket seat cannot be empty")
+	} else if d.Ticket.Type == "" {
+		return errors.New("ticket type cannot be empty")
+	} else if d.Ticket.Price <= 0 {
+		return errors.New("ticket price must be greater than 0")
+	}
 	return nil
 }
 
