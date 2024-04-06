@@ -108,7 +108,7 @@ func process(info *data) error {
 	if err := canvas.LoadFontFace(path.Join(src, info.FontFamily), notifyFontSize); err != nil {
 		return err
 	}
-	canvas.SetHexColor(red)
+	canvas.SetHexColor(black)
 	salesText := fmt.Sprintf("售出：%s", info.Ticket.SalesTime)
 	_, salesTextW := canvas.MeasureString(salesText)
 	canvas.DrawStringAnchored(salesText, widthFloat-salesTextW, heightFloat-typePositionH, 1, 1)
