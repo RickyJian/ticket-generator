@@ -18,7 +18,6 @@ Generating ticket information.
 {
   "width":6, // required
   "height":9, // required
-  "divider_position":5.5, // optional
   "background":"background.png", // required
   "font_family":"NotoSansTC-Regular.ttf", // required
   "cinema":{

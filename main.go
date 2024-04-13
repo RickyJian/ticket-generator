@@ -104,17 +104,21 @@ func (d *data) string() string {
 	// 片名
 	builder.WriteString("片名：")
 	builder.WriteString(d.Movie.Name)
-	builder.WriteString("（")
-	builder.WriteString(d.Movie.EngName)
-	builder.WriteString("）")
+	if d.Movie.EngName != "" {
+		builder.WriteString("（")
+		builder.WriteString(d.Movie.EngName)
+		builder.WriteString("）")
+	}
 	builder.WriteString("\n")
 
 	// 放映時間
 	builder.WriteString("時間：")
 	builder.WriteString(d.Movie.Time)
-	builder.WriteString("（售出：")
-	builder.WriteString(d.Ticket.SalesTime)
-	builder.WriteString("）")
+	if d.Ticket.SalesTime != "" {
+		builder.WriteString("（售出：")
+		builder.WriteString(d.Ticket.SalesTime)
+		builder.WriteString("）")
+	}
 	builder.WriteString("\n")
 
 	// 影廳
