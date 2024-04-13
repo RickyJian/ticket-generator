@@ -8,6 +8,8 @@ import (
 	"log"
 	"os"
 	"path"
+	"strconv"
+	"strings"
 )
 
 const (
@@ -95,6 +97,49 @@ func (d *data) validate() error {
 		return errors.New("ticket price must be greater than 0")
 	}
 	return nil
+}
+
+func (d *data) string() string {
+	var builder strings.Builder
+	// 影城
+	builder.WriteString("影城：")
+	builder.WriteString(d.Cinema.Name)
+	builder.WriteString("\n")
+
+	// 片名
+	builder.WriteString("片名：")
+	builder.WriteString(d.Movie.Name)
+	builder.WriteString("（")
+	builder.WriteString(d.Movie.EngName)
+	builder.WriteString("）")
+	builder.WriteString("\n")
+
+	// 放映時間
+	builder.WriteString("時間：")
+	builder.WriteString(d.Movie.Time)
+	builder.WriteString("（售出：")
+	builder.WriteString(d.Ticket.SalesTime)
+	builder.WriteString("）")
+	builder.WriteString("\n")
+
+	// 影廳
+	builder.WriteString("影廳：")
+	builder.WriteString(d.Ticket.Room)
+	builder.WriteString("\n")
+
+	// 座位
+	builder.WriteString("座位：")
+	builder.WriteString(d.Ticket.Room)
+	builder.WriteString("\n")
+
+	// 票價
+	builder.WriteString("票價：")
+	builder.WriteString(strconv.Itoa(d.Ticket.Price))
+	builder.WriteString(" 元")
+	builder.WriteString("（")
+	builder.WriteString(d.Ticket.Type)
+	builder.WriteString("）")
+	return builder.String()
 }
 
 type cinema struct {
