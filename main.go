@@ -57,11 +57,10 @@ func main() {
 }
 
 type data struct {
-	Width           float32 `json:"width"`
-	Height          float32 `json:"height"`
-	DividerPosition float32 `json:"divider_position"`
-	Background      string  `json:"background"`
-	FontFamily      string  `json:"font_family"`
+	Width      float32 `json:"width"`
+	Height     float32 `json:"height"`
+	Background string  `json:"background"`
+	FontFamily string  `json:"font_family"`
 	// ticket information
 	Cinema *cinema `json:"cinema"`
 	Movie  *movie  `json:"movie"`
@@ -73,10 +72,6 @@ func (d *data) validate() error {
 		return errors.New("width must be greater than 0")
 	} else if d.Height <= 0 {
 		return errors.New("height must be greater than 0")
-	} else if d.DividerPosition < 0 {
-		return errors.New("division position cannot be negative")
-	} else if d.DividerPosition > d.Height {
-		return errors.New("division position cannot be greater than height")
 	} else if d.FontFamily == "" {
 		return errors.New("font family cannot be empty")
 	} else if d.Cinema.Name == "" {

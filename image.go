@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	_ "image/png"
 	"log"
 	"math"
@@ -11,12 +12,12 @@ import (
 )
 
 const (
-	white        = "#FFFFFF"
-	black        = "#000000"
-	red          = "#FF0000"
-	topPsvSpace  = 10
-	leftPsvSpace = 5
-	lineSpacing  = 1.5
+	white           = "#FFFFFF"
+	black           = "#000000"
+	red             = "#FF0000"
+	dividerPosition = 7.5
+	psvSpace        = 5
+	lineSpacing     = 1.5
 )
 
 func process(info *data) error {
@@ -38,27 +39,33 @@ func process(info *data) error {
 		canvas.Fill()
 	}
 
-	position := pixelFloat(info.DividerPosition)
+	position := pixelFloat(dividerPosition)
 	// drawing divider position
-	if info.DividerPosition > 0 {
-		canvas.DrawLine(0, position, widthFloat, position)
-		canvas.SetHexColor(black)
-		canvas.SetLineWidth(1)
-		canvas.SetDash(3, 5)
-		canvas.Stroke()
-	}
+	canvas.DrawLine(0, position, widthFloat, position)
+	canvas.SetHexColor(black)
+	canvas.SetLineWidth(1)
+	canvas.SetDash(3, 5)
+	canvas.Stroke()
+
 	// drawing text
 	// 免責訊息
-	notifyFontSize := pixelFloat(info.Height-info.DividerPosition) / 10
+	notifyFontSize := 15.0
 	if err := canvas.LoadFontFace(path.Join(src, info.FontFamily), notifyFontSize); err != nil {
 		return err
 	}
 	canvas.SetHexColor(red)
 	notifyText := "開映前二十分鐘，恕不退換。"
-	_, notifyW := canvas.MeasureString(notifyText)
-	canvas.DrawStringAnchored(notifyText, (widthFloat+notifyW)/2, position-topPsvSpace/2, 0.5, 0)
+	_, notifyWidth := canvas.MeasureString(notifyText)
+	bottomTopX, bottomTopY := (widthFloat+notifyWidth)/2, position-psvSpace
+	canvas.DrawStringAnchored(notifyText, bottomTopX, bottomTopY, 0.5, 0)
+
+	notifyText2 := fmt.Sprintf("限%s使用，隔日無效。", info.Cinema.Name)
+	_, notifyWidth2 := canvas.MeasureString(notifyText2)
+	bottomRightX2, bottomRightY2 := widthFloat-notifyWidth2, heightFloat-psvSpace
+	canvas.DrawStringAnchored(notifyText2, bottomRightX2, bottomRightY2, 1, 0)
+
 	// 電影票訊息
-	fontSize := pixelFloat(info.Height-info.DividerPosition) / 8
+	fontSize := (heightFloat - position - (psvSpace * 6)) / 6
 	if err := canvas.LoadFontFace(path.Join(src, info.FontFamily), fontSize); err != nil {
 		return err
 	}
