@@ -128,7 +128,7 @@ func (d *data) string() string {
 
 	// 座位
 	builder.WriteString("座位：")
-	builder.WriteString(d.Ticket.Room)
+	builder.WriteString(d.Ticket.Seat)
 	builder.WriteString("\n")
 
 	// 票價
