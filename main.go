@@ -13,7 +13,8 @@ import (
 )
 
 const (
-	dataName = "data.json"
+	dataName    = "data.json"
+	ticketCount = 2
 )
 
 var (
@@ -51,94 +52,51 @@ func main() {
 	} else if err := info.validate(); err != nil {
 		log.Fatal(err)
 	}
-	if err := process(info); err != nil {
-		log.Fatalf("failed to process image. err: %v", err)
+
+	for len(info.Tickets) > 0 {
+		size := ticketCount
+		if size > len(info.Tickets) {
+			size = len(info.Tickets)
+		}
+		ts := info.Tickets[:size]
+		if err := process(info.FontFamily, ts); err != nil {
+			log.Printf("failed to process image. err: %v\n", err)
+			continue
+		}
+		info.Tickets = info.Tickets[size:]
 	}
 }
 
 type data struct {
-	Width      float32 `json:"width"`
-	Height     float32 `json:"height"`
-	Background string  `json:"background"`
-	FontFamily string  `json:"font_family"`
+	FontFamily string `json:"font_family"`
 	// ticket information
-	Cinema *cinema `json:"cinema"`
-	Movie  *movie  `json:"movie"`
-	Ticket *ticket `json:"ticket"`
+	Tickets []*tickets
 }
 
 func (d *data) validate() error {
-	if d.Width <= 0 {
-		return errors.New("width must be greater than 0")
-	} else if d.Height <= 0 {
-		return errors.New("height must be greater than 0")
-	} else if d.FontFamily == "" {
+	if d.FontFamily == "" {
 		return errors.New("font family cannot be empty")
-	} else if d.Cinema.Name == "" {
-		return errors.New("cinema name cannot be empty")
-	} else if d.Movie.Name == "" {
-		return errors.New("movie name cannot be empty")
-	} else if d.Movie.Name == "" {
-		return errors.New("movie eng name cannot be empty")
-	} else if d.Movie.Time == "" {
-		return errors.New("movie time cannot be empty")
-	} else if d.Ticket.Room == "" {
-		return errors.New("ticket room cannot be empty")
-	} else if d.Ticket.Seat == "" {
-		return errors.New("ticket seat cannot be empty")
-	} else if d.Ticket.Type == "" {
-		return errors.New("ticket type cannot be empty")
-	} else if d.Ticket.Price <= 0 {
-		return errors.New("ticket price must be greater than 0")
+	}
+	for _, t := range d.Tickets {
+		if t.Cinema.Name == "" {
+			return errors.New("cinema name cannot be empty")
+		} else if t.Movie.Name == "" {
+			return errors.New("movie name cannot be empty")
+		} else if t.Movie.Name == "" {
+			return errors.New("movie eng name cannot be empty")
+		} else if t.Movie.Time == "" {
+			return errors.New("movie time cannot be empty")
+		} else if t.Ticket.Room == "" {
+			return errors.New("ticket room cannot be empty")
+		} else if t.Ticket.Seat == "" {
+			return errors.New("ticket seat cannot be empty")
+		} else if t.Ticket.Type == "" {
+			return errors.New("ticket type cannot be empty")
+		} else if t.Ticket.Price <= 0 {
+			return errors.New("ticket price must be greater than 0")
+		}
 	}
 	return nil
-}
-
-func (d *data) string() string {
-	var builder strings.Builder
-	// 影城
-	builder.WriteString("影城：")
-	builder.WriteString(d.Cinema.Name)
-	builder.WriteString("\n")
-
-	// 片名
-	builder.WriteString("片名：")
-	builder.WriteString(d.Movie.Name)
-	if d.Movie.EngName != "" {
-		builder.WriteString("（")
-		builder.WriteString(d.Movie.EngName)
-		builder.WriteString("）")
-	}
-	builder.WriteString("\n")
-
-	// 放映時間
-	builder.WriteString("時間：")
-	builder.WriteString(d.Movie.Time)
-	if d.Ticket.SalesTime != "" {
-		builder.WriteString("（售出：")
-		builder.WriteString(d.Ticket.SalesTime)
-		builder.WriteString("）")
-	}
-	builder.WriteString("\n")
-
-	// 影廳
-	builder.WriteString("影廳：")
-	builder.WriteString(d.Ticket.Room)
-	builder.WriteString("\n")
-
-	// 座位
-	builder.WriteString("座位：")
-	builder.WriteString(d.Ticket.Seat)
-	builder.WriteString("\n")
-
-	// 票價
-	builder.WriteString("票價：")
-	builder.WriteString(strconv.Itoa(d.Ticket.Price))
-	builder.WriteString(" 元")
-	builder.WriteString("（")
-	builder.WriteString(d.Ticket.Type)
-	builder.WriteString("）")
-	return builder.String()
 }
 
 type cinema struct {
@@ -157,4 +115,58 @@ type ticket struct {
 	Type      string `json:"type"`
 	Price     int    `json:"price"`
 	SalesTime string `json:"sales_time"`
+}
+
+type tickets struct {
+	Background string  `json:"background"`
+	Cinema     *cinema `json:"cinema"`
+	Movie      *movie  `json:"movie"`
+	Ticket     *ticket `json:"ticket"`
+}
+
+func (t *tickets) string() string {
+	var builder strings.Builder
+	// 影城
+	builder.WriteString("影城：")
+	builder.WriteString(t.Cinema.Name)
+	builder.WriteString("\n")
+
+	// 片名
+	builder.WriteString("片名：")
+	builder.WriteString(t.Movie.Name)
+	if t.Movie.EngName != "" {
+		builder.WriteString("（")
+		builder.WriteString(t.Movie.EngName)
+		builder.WriteString("）")
+	}
+	builder.WriteString("\n")
+
+	// 放映時間
+	builder.WriteString("時間：")
+	builder.WriteString(t.Movie.Time)
+	if t.Ticket.SalesTime != "" {
+		builder.WriteString("（售出：")
+		builder.WriteString(t.Ticket.SalesTime)
+		builder.WriteString("）")
+	}
+	builder.WriteString("\n")
+
+	// 影廳
+	builder.WriteString("影廳：")
+	builder.WriteString(t.Ticket.Room)
+	builder.WriteString("\n")
+
+	// 座位
+	builder.WriteString("座位：")
+	builder.WriteString(t.Ticket.Seat)
+	builder.WriteString("\n")
+
+	// 票價
+	builder.WriteString("票價：")
+	builder.WriteString(strconv.Itoa(t.Ticket.Price))
+	builder.WriteString(" 元")
+	builder.WriteString("（")
+	builder.WriteString(t.Ticket.Type)
+	builder.WriteString("）")
+	return builder.String()
 }
