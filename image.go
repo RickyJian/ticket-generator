@@ -26,6 +26,7 @@ const (
 	psvSpace          = 5
 	lineSpacing       = 1.5
 	gradientStopCount = 5
+	opacity           = 255
 )
 
 func process(fontFamily string, ts []*tickets) error {
@@ -86,7 +87,13 @@ func (d *drawer) drawTicket(fontFamily string, base float64, t *tickets) error {
 		grad := gg.NewLinearGradient(base, coverY, base, d.ticketHeightPxFloat)
 		for i := 0; i < gradientStopCount; i++ {
 			offset := float64(i) / float64(gradientStopCount)
-			gradientColor := color.NRGBA{R: 255, G: 255, B: 255, A: uint8(255 / gradientStopCount * i)}
+			var alpha uint8
+			if transCount := gradientStopCount - 2; i < transCount {
+				alpha = uint8(opacity / transCount * i)
+			} else {
+				alpha = opacity
+			}
+			gradientColor := color.NRGBA{R: 255, G: 255, B: 255, A: alpha}
 			grad.AddColorStop(offset, gradientColor)
 		}
 		d.SetFillStyle(grad)
