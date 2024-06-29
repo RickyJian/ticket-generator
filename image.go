@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"image/color"
 	_ "image/png"
 	"log"
 	"math"
@@ -17,13 +18,14 @@ const (
 	black = "#000000"
 	red   = "#FF0000"
 	// below unit is centimeter
-	width           = 14.8
-	height          = 10
-	ticketHeight    = 10
-	ticketWidth     = 6.6
-	dividerPosition = 7.5
-	psvSpace        = 5
-	lineSpacing     = 1.5
+	width             = 14.8
+	height            = 10
+	ticketHeight      = 10
+	ticketWidth       = 6.6
+	dividerPosition   = 7.5
+	psvSpace          = 5
+	lineSpacing       = 1.5
+	gradientStopCount = 5
 )
 
 func process(fontFamily string, ts []*tickets) error {
@@ -77,6 +79,18 @@ func (d *drawer) drawTicket(fontFamily string, base float64, t *tickets) error {
 		}
 		fillImage := imaging.Fill(background, d.ticketWidthPx, d.ticketHeightPx, imaging.Center, imaging.Lanczos)
 		d.DrawImage(fillImage, int(base), 0)
+		d.Fill()
+
+		// add cover
+		coverY := d.ticketHeightPxFloat - d.ticketHeightPxFloat/2
+		grad := gg.NewLinearGradient(base, coverY, base, d.ticketHeightPxFloat)
+		for i := 0; i < gradientStopCount; i++ {
+			offset := float64(i) / float64(gradientStopCount)
+			gradientColor := color.NRGBA{R: 255, G: 255, B: 255, A: uint8(255 / gradientStopCount * i)}
+			grad.AddColorStop(offset, gradientColor)
+		}
+		d.SetFillStyle(grad)
+		d.DrawRectangle(base, coverY, d.ticketWidthPxFloat, d.ticketHeightPxFloat)
 		d.Fill()
 	}
 
