@@ -19,9 +19,9 @@ const (
 	red   = "#FF0000"
 	// below unit is centimeter
 	width             = 14.8
-	height            = 10
-	ticketHeight      = 10
-	ticketWidth       = 6.6
+	height            = 9.8
+	ticketHeight      = 9.8
+	ticketWidth       = 6.5
 	dividerPosition   = 7.5
 	psvSpace          = 5
 	lineSpacing       = 1.5
