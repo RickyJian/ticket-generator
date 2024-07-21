@@ -142,6 +142,13 @@ func (d *drawer) drawTicket(fontFamily string, base float64, t *tickets) error {
 	bottomX := base + ((d.ticketWidthPxFloat - bottomWidth) / 2)
 	bottomY := position + ((d.ticketHeightPxFloat - position - bottomHeight) / 2)
 	d.DrawStringWrapped(ticketInfo, bottomX, bottomY, 0, 0, d.ticketWidthPxFloat, lineSpacing, gg.AlignLeft)
+
+	// draw outline
+	d.SetHexColor(black)
+	d.SetLineWidth(1)
+	d.SetDash(10, 10)
+	d.DrawRectangle(base, 0, d.ticketWidthPxFloat, d.ticketHeightPxFloat)
+	d.Stroke()
 	return nil
 }
 
