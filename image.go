@@ -8,6 +8,7 @@ import (
 	"log"
 	"math"
 	"path"
+	"time"
 
 	"github.com/RickyJian/gg"
 	"github.com/disintegration/imaging"
@@ -19,9 +20,9 @@ const (
 	red   = "#FF0000"
 	// below unit is centimeter
 	width             = 14.8
-	height            = 9.8
-	ticketHeight      = 9.8
-	ticketWidth       = 6.5
+	height            = 9.5
+	ticketHeight      = height
+	ticketWidth       = 6.2
 	dividerPosition   = 7.5
 	psvSpace          = 5
 	lineSpacing       = 1.5
@@ -132,7 +133,7 @@ func (d *drawer) drawTicket(fontFamily string, base float64, t *tickets) error {
 	d.DrawStringAnchored(notifyText2, bottomRightX2, bottomRightY2, 0, 0)
 
 	// 電影票訊息
-	infoFontSize := 32.0
+	infoFontSize := 28.0
 	if err := d.LoadFontFace(path.Join(src, fontFamily), infoFontSize); err != nil {
 		return err
 	}
@@ -156,7 +157,8 @@ func (d *drawer) save() error {
 	if d == nil {
 		return errors.New("empty drawer")
 	}
-	return d.SavePNG(dest)
+	name := fmt.Sprintf("%s_%d.png", dest, time.Now().UnixNano())
+	return d.SavePNG(name)
 }
 
 const (
