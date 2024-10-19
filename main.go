@@ -10,6 +10,8 @@ import (
 	"path"
 	"strconv"
 	"strings"
+
+	"github.com/schollz/progressbar/v3"
 )
 
 const (
@@ -53,6 +55,19 @@ func main() {
 		log.Fatal(err)
 	}
 
+	bar := progressbar.NewOptions(len(info.Tickets),
+		progressbar.OptionShowCount(),
+		progressbar.OptionShowIts(),
+		progressbar.OptionSetItsString("pieces"),
+		progressbar.OptionSetDescription("Generating tickets..."),
+		progressbar.OptionShowElapsedTimeOnFinish(),
+		progressbar.OptionSetTheme(
+			progressbar.Theme{
+				Saucer:        "=",
+				SaucerHead:    ">",
+				SaucerPadding: " ",
+				BarStart:      "[",
+				BarEnd:        "]"}))
 	for len(info.Tickets) > 0 {
 		size := ticketCount
 		if size > len(info.Tickets) {
@@ -62,6 +77,9 @@ func main() {
 		if err := process(info.FontFamily, ts); err != nil {
 			log.Printf("failed to process image. err: %v\n", err)
 			continue
+		}
+		if err := bar.Add(size); err != nil {
+			log.Fatal(err)
 		}
 		info.Tickets = info.Tickets[size:]
 	}
