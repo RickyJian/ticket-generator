@@ -40,6 +40,10 @@ func init() {
 		log.Fatalf("flag needs an argument: -s")
 	} else if dest == "" {
 		log.Fatalf("flag needs an argument: -d ")
+	} else if _, err := os.Stat(src); os.IsNotExist(err) {
+		log.Fatal("src directory not found")
+	} else if _, err := os.Stat(dest); os.IsNotExist(err) {
+		log.Fatal("desc directory not found")
 	}
 }
 
