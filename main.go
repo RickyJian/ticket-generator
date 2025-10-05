@@ -104,8 +104,6 @@ func (d *data) validate() error {
 			return errors.New("cinema name cannot be empty")
 		} else if t.Movie.Name == "" {
 			return errors.New("movie name cannot be empty")
-		} else if t.Movie.Name == "" {
-			return errors.New("movie eng name cannot be empty")
 		} else if t.Movie.Time == "" {
 			return errors.New("movie time cannot be empty")
 		} else if t.Ticket.Room == "" {
@@ -114,8 +112,8 @@ func (d *data) validate() error {
 			return errors.New("ticket seat cannot be empty")
 		} else if t.Ticket.Type == "" {
 			return errors.New("ticket type cannot be empty")
-		} else if t.Ticket.Price <= 0 {
-			return errors.New("ticket price must be greater than 0")
+		} else if t.Ticket.Price < 0 {
+			return errors.New("ticket price must be greater or equal to 0")
 		}
 	}
 	return nil
